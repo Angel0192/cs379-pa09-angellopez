@@ -1,8 +1,4 @@
 """
-PA 7 dependency: paste in YOUR OWN completed PA 6 frames.py here.
-
-Original header preserved below for reference:
-
 PA 6: The Activation Record -- starter.
 
 Complete ActivationRecord and CallStack below. See
@@ -32,28 +28,45 @@ class ActivationRecord:
         static_link: Optional["ActivationRecord"],
         dynamic_link: Optional["ActivationRecord"],
     ) -> None:
-        # TODO: store all six arguments as attributes of the same names.
-        raise NotImplementedError
+        # 1. Store the name of the function being invoked
+        self.function_name = function_name
+        
+        # 2. Store the arguments/paramets passed into this frame
+        self.parameters = parameters
+        
+        # 3. Store the environment (locals/variables) using the PA 5 Environment Model
+        self.locals_env = locals_env
+        
+        # 4. Store the return address (where execution jumps back to after the call)
+        self.return_address = return_address
+        
+        # 5. Store the static link pointing to the lexically enclosing scope's frame
+        self.static_link = static_link
+        
+        # 6. Store the dynamic link pointing to the immediate caller's frame
+        self.dynamic_link = dynamic_link
 
 
 class CallStack:
     def __init__(self) -> None:
-        # TODO: internal storage for the stack of frames.
-        raise NotImplementedError
+        self._frames: List[ActivationRecord] = []
 
     def push(self, record: ActivationRecord) -> None:
-        # TODO
-        raise NotImplementedError
+        self._frames.append(record)
 
     def pop(self) -> ActivationRecord:
         """Remove and return the top frame."""
-        # TODO
-        raise NotImplementedError
+        # Make sure the stack isn't empty before popping
+        if not self._frames:
+            raise IndexError("Cannot pop from an empty call stack.")
+        return self._frames.pop()
 
     def current(self) -> ActivationRecord:
         """Return (without removing) the top frame."""
-        # TODO
-        raise NotImplementedError
+        # Ensure the stack isn't empty before peeking at the current frame
+        if not self._frames:
+            raise IndexError("Call Stack is empty.")
+        return self._frames[-1]
 
     def trace(self) -> List[str]:
         """
@@ -61,5 +74,7 @@ class CallStack:
         stack first (oldest call first). Format is up to you, but
         each line must include the function_name and its parameters.
         """
-        # TODO
-        raise NotImplementedError
+        return [
+            f"Function: {frame.function_name} | Parameters: {frame.parameters}"
+            for frame in self._frames
+        ]
